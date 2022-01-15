@@ -42,11 +42,12 @@ class CreatePostForm(FlaskForm):
     submit = SubmitField("Submit Post")
 
 
+#READ ALL RECORDS FROM THE DATABASE
+posts = db.session.query(BlogPost).all()
+
 @app.route('/')
 def get_all_posts():
-    #READ ALL RECORDS FROM THE DATABASE
-    posts = db.session.query(BlogPost).all()
-    print(posts)
+    # print(posts)
     return render_template("index.html", all_posts=posts)
 
 
@@ -54,8 +55,9 @@ def get_all_posts():
 def show_post(index):
     requested_post = None
     for blog_post in posts:
-        if blog_post["id"] == index:
+        if blog_post.id == index:
             requested_post = blog_post
+            # print(requested_post)
     return render_template("post.html", post=requested_post)
 
 
@@ -69,4 +71,4 @@ def contact():
     return render_template("contact.html")
 
 if __name__ == "__main__":
-    app.run(host='0.0.0.0', port=5000)
+    app.run(host='0.0.0.0', port=5000, debug=True)
