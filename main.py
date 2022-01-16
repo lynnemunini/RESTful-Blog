@@ -103,9 +103,9 @@ def edit(post_id):
 @app.route('/delete/<int:post_id>')
 def delete(post_id):
     #DELETE A PARTICULAR RECORD BY PRIMARY primary_key
-    post_to_delete = BlogPost.query.get(post_id)
-    db.session.delete(post_to_delete)
-    db.session.commit()
+    # post_to_delete = BlogPost.query.get(post_id)
+    # db.session.delete(post_to_delete)
+    # db.session.commit()
     return redirect(url_for("get_all_posts"))
 
 
