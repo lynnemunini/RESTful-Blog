@@ -41,21 +41,16 @@ class CreatePostForm(FlaskForm):
 
 
 #READ ALL RECORDS FROM THE DATABASE
-posts = db.session.query(BlogPost).all()
 
 @app.route('/')
 def get_all_posts():
-    # print(posts)
+    posts = db.session.query(BlogPost).all()
     return render_template("index.html", all_posts=posts)
 
 
 @app.route("/post/<int:index>")
 def show_post(index):
-    requested_post = None
-    for blog_post in posts:
-        if blog_post.id == index:
-            requested_post = blog_post
-            # print(requested_post)
+    requested_post = BlogPost.query.get(index)
     return render_template("post.html", post=requested_post)
 
 
@@ -72,15 +67,15 @@ def contact():
 def new_post():
     form = CreatePostForm()
     if form.validate_on_submit():
-        title = request.form["title"]
-        subtitle = request.form["subtitle"]
-        author = request.form["author"]
-        img_url = request.form["img_url"]
-        body = request.form["body"]
+        title = form.title.data
+        subtitle = form.subtitle.data
+        author = form.author.data
+        img_url = form.img_url.data
+        body = form.body.data
         post_data = BlogPost(title=title, subtitle=subtitle, date=today, body=body, author=author, img_url=img_url)   
         db.session.add(post_data)
         db.session.commit()       
-        return redirect("post.html")
+        return redirect(url_for("get_all_posts"))
     return render_template("make-post.html", form=form)
 
 
@@ -105,5 +100,16 @@ def edit(post_id):
     return render_template("make-post.html", form=edit_form, edit_post = True)
 
 
+@app.route('/delete/<int:post_id>')
+def delete(post_id):
+    #DELETE A PARTICULAR RECORD BY PRIMARY primary_key
+    post_to_delete = BlogPost.query.get(post_id)
+    db.session.delete(post_to_delete)
+    db.session.commit()
+    return redirect(url_for("get_all_posts"))
+
+
+
 if __name__ == "__main__":
-    app.run(host='0.0.0.0', port=5000, debug=True)
+    # host='0.0.0.0', port=5000, 
+    app.run(debug=True)
