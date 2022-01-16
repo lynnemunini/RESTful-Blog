@@ -80,11 +80,11 @@ def new_post():
         post_data = BlogPost(title=title, subtitle=subtitle, date=today, body=body, author=author, img_url=img_url)   
         db.session.add(post_data)
         db.session.commit()       
-        return redirect(url_for("get_all_posts"))
+        return redirect("post.html")
     return render_template("make-post.html", form=form)
 
 
-@app.route('/edit-post/<post_id>', methods=["GET","POST"])
+@app.route('/edit-post/<int:post_id>', methods=["GET","POST"])
 def edit(post_id):
     post_to_edit = BlogPost.query.get(post_id)
     edit_form = CreatePostForm(
@@ -93,7 +93,15 @@ def edit(post_id):
     img_url=post_to_edit.img_url,
     author=post_to_edit.author,
     body=post_to_edit.body
-)
+    )
+    if edit_form.validate_on_submit():
+        post_to_edit.title = edit_form.title.data
+        post_to_edit.subtitle = edit_form.subtitle.data
+        post_to_edit.author = edit_form.author.data
+        post_to_edit.img_url = edit_form.img_url.data
+        post_to_edit.body = edit_form.body.data
+        db.session.commit()   
+        return redirect(url_for("show_post", index=post_to_edit.id))
     return render_template("make-post.html", form=edit_form, edit_post = True)
 
 
