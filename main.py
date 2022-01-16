@@ -70,5 +70,10 @@ def about():
 def contact():
     return render_template("contact.html")
 
+@app.route('/new-post')
+def new_post():
+    form = CreatePostForm()
+    return render_template("make-post.html", form=form)
+
 if __name__ == "__main__":
     app.run(host='0.0.0.0', port=5000, debug=True)
