@@ -24,11 +24,12 @@
       <div class="row">
         <div class="col-lg-8 col-md-10 mx-auto">
           <p>
+            <!-- To unescape the HTML tags -->
             {{post.body|safe}}
           </p>
            <hr>
            <div class="clearfix">
-          <a class="btn btn-primary float-right" href="">Edit Post</a>
+          <a class="btn btn-primary float-right" href="{{url_for('edit', post_id=post.id)}}">Edit Post</a>
         </div>
           </div>
       </div>
