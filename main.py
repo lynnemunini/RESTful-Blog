@@ -1,16 +1,14 @@
-from flask import Flask, render_template, redirect, url_for
+from flask import Flask, render_template, redirect, url_for, request
 from flask_bootstrap import Bootstrap
 from flask_sqlalchemy import SQLAlchemy
 from flask_wtf import FlaskForm
 from wtforms import StringField, SubmitField
 from wtforms.validators import DataRequired, URL
 from flask_ckeditor import CKEditor, CKEditorField
+import datetime
 
-
-# Delete this code:
-# import requests
-# posts = requests.get("https://api.npoint.io/43644ec4f0013682fc0d").json()
-
+today = datetime.date.today()
+today = today.strftime('%B %d, %Y')
 app = Flask(__name__)
 app.config['SECRET_KEY'] = '8BYkEfBA6O6donzWlSihBXox7C0sKR6b'
 ckeditor = CKEditor(app)
@@ -70,9 +68,19 @@ def about():
 def contact():
     return render_template("contact.html")
 
-@app.route('/new-post')
+@app.route('/new-post', methods=["GET","POST"])
 def new_post():
     form = CreatePostForm()
+    if form.validate_on_submit():
+        title = request.form["title"]
+        subtitle = request.form["subtitle"]
+        author = request.form["author"]
+        img_url = request.form["img_url"]
+        body = request.form["body"]
+        post_data = BlogPost(title=title, subtitle=subtitle, date=today, body=body, author=author, img_url=img_url)   
+        db.session.add(post_data)
+        db.session.commit()       
+        return redirect(url_for("get_all_posts"))
     return render_template("make-post.html", form=form)
 
 if __name__ == "__main__":
