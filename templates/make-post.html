@@ -21,7 +21,9 @@
     <div class="row">
       <div class="col-lg-8 col-md-10 mx-auto">
         
-        {{ wtf.quick_form(form) }}
+        {{ wtf.quick_form(form, button_map={'submit': 'primary'}) }}
+        {{ ckeditor.load() }}
+        {{ ckeditor.config(name='body') }}
 
       </div>
     </div>
